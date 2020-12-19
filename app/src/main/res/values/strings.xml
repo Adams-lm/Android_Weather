@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">project</string>
+    <string name="title_map">地图</string>
+    <string name="title_weather">天气</string>
+    <string name="title_history">历史</string>
+    <string name="title_setting">设置</string>
+</resources>
