@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".ui.weather.RecommendFragment">
+        tools:context=".fragment.weather.RecommendFragment">
 
     <ImageView
             android:id="@+id/iv_QR"

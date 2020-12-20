@@ -1,4 +1,4 @@
-package com.hznu.lin.project.ui.weather;
+package com.hznu.lin.project.fragment.weather;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

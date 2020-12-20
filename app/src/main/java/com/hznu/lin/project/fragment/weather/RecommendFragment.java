@@ -1,8 +1,7 @@
-package com.hznu.lin.project.ui.weather;
+package com.hznu.lin.project.fragment.weather;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
@@ -33,10 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
@@ -75,9 +71,9 @@ public class RecommendFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Bitmap bitmap = null;
                 String getUrl = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=5&mkt=zh-CN";
                 String response = HttpUtil.get(getUrl, null);
+                String imageUrl = null;
                 // Json 处理
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -92,26 +88,12 @@ public class RecommendFragment extends Fragment {
                     int size = bingList.size();
                     int random = new Random().nextInt(size);
                     Bing bing = bingList.get(random);
-                    String urlPath = "https://www.bing.com" + bing.getUrl();
-                    // 图片下载处理
-                    try {
-                        URL url = new URL(urlPath);
-                        HttpURLConnection conn;
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setDoInput(true);
-                        InputStream is = conn.getInputStream();
-                        bitmap = BitmapFactory.decodeStream(is);
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    imageUrl = "https://www.bing.com" + bing.getUrl();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Message msg = Message.obtain();
-                msg.obj = bitmap;
+                msg.obj = imageUrl;
                 handlerBing.sendMessage(msg);
             }
         }).start();
@@ -124,10 +106,11 @@ public class RecommendFragment extends Fragment {
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            Bitmap bitmap = (Bitmap) msg.obj;
+            String urlPath = (String) msg.obj;
             // UI处理
             ivBing.setVisibility(View.VISIBLE);
-            ivBing.setImageBitmap(bitmap);
+            Glide.with(getContext()).load(urlPath).into(ivBing);
+//            ivBing.setImageBitmap(bitmap);
             ToastUtil.showToast(getContext(), "Bing每日一图更新成功", Toast.LENGTH_SHORT);
             super.handleMessage(msg);
         }

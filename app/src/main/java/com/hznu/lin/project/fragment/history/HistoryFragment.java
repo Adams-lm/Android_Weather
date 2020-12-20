@@ -1,4 +1,4 @@
-package com.hznu.lin.project.ui.history;
+package com.hznu.lin.project.fragment.history;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +16,7 @@ import com.hznu.lin.project.R;
 import com.hznu.lin.project.dao.TestDao;
 import com.hznu.lin.project.db.TestDataBase;
 import com.hznu.lin.project.entity.Test;
+import com.hznu.lin.project.fragment.weather.TodayFragment;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class HistoryFragment extends Fragment {
 //        testDao.insertAll(test1);
         List<Test> all = testDao.getAll();
         for (Test test : all) {
-            Log.i("DATABASE",test.toString());
+            Log.i("DATABASE", test.toString());
         }
     }
 

@@ -1,4 +1,4 @@
-package com.hznu.lin.project.ui.map;
+package com.hznu.lin.project.fragment.map;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
