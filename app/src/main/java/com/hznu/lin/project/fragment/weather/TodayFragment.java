@@ -1,9 +1,12 @@
 package com.hznu.lin.project.fragment.weather;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +58,8 @@ public class TodayFragment extends Fragment {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    private List<CityWeather> weatherList = new ArrayList<>();
-    private String[] citys = {"杭州", "北京", "天津", "福州", "厦门", "宁波", "温州"};
+    public static List<CityWeather> weatherList = new ArrayList<>();
+    public static String[] citys = {"杭州", "北京", "天津", "福州", "厦门", "宁波", "温州"};
     public static String defaultCity = "杭州";
 
     public TodayFragment() {
@@ -66,10 +69,7 @@ public class TodayFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_today, container, false);
         ButterKnife.bind(this, view);
-
-        // recyclerView初始化
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        init();
         return view;
     }
 
@@ -80,18 +80,24 @@ public class TodayFragment extends Fragment {
         initWeatherList();
     }
 
+    // 初始化设置
+    public void init(){
+        // 默认城市初始化
+        SharedPreferences sp = getActivity().getSharedPreferences("SP", Context.MODE_PRIVATE);
+        defaultCity = sp.getString("defaultCity","杭州");
+
+        // recyclerView初始化
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
     public void initWeatherList() {
-        for (String city : citys) {
-            getCityWeather(city);
-        }
-        // 直到城市天气都获取到后再初始化recyclerView
-        while (weatherList.size() != citys.length) ;
         CityWeatherAdapter adapter = new CityWeatherAdapter(weatherList);
         recyclerView.setAdapter(adapter);
     }
 
 
-    // 获取当天天气
+    // 获取默认城市当天天气
     public void getTodayWeather(String city) {
         new Thread(new Runnable() {
             @Override
@@ -115,7 +121,7 @@ public class TodayFragment extends Fragment {
         }).start();
     }
 
-    // 获取当天天气handle
+    // 获取默认城市当天天气handle
     @SuppressLint("HandlerLeak")
     private Handler handlerWeather = new Handler() {
         @Override
@@ -151,9 +157,8 @@ public class TodayFragment extends Fragment {
                     default:
                         resource = R.drawable.default_weather;
                 }
-                ivWeatherImg.setImageResource(resource);
                 // UI处理
-
+                ivWeatherImg.setImageResource(resource);
                 tvTemperature.setText(temperature);
                 tvType.setText(weather.getType());
                 tvWindPower.setText(windPower);
@@ -167,7 +172,8 @@ public class TodayFragment extends Fragment {
         }
     };
 
-    private void getCityWeather(String city) {
+    // 获取某个城市天气信息
+    public static void getCityWeather(String city) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -186,13 +192,11 @@ public class TodayFragment extends Fragment {
                     Weather weather = new Gson().fromJson(weatherObject.toString(), Weather.class);
                     String temperature = weather.getLow().substring(3) + " ~ " + weather.getHigh().substring(3);
                     CityWeather cityWeather = new CityWeather(city, weather.getType(), temperature);
-//                    Log.i("WEATHER", cityWeather.toString() + "=============");
+                    Log.i("WEATHER", cityWeather.toString() + "=============");
                     weatherList.add(cityWeather);
                 } catch (IOException e) {
-                    ToastUtil.showToast(getContext(), "IOException", Toast.LENGTH_SHORT);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    ToastUtil.showToast(getContext(), "JSONException", Toast.LENGTH_SHORT);
                     e.printStackTrace();
                 }
             }

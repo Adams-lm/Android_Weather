@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.hznu.lin.project.fragment.weather.TodayFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // 城市天气列表初始化
+        for (String city : TodayFragment.citys) {
+            TodayFragment.getCityWeather(city);
+        }
     }
 
 }
