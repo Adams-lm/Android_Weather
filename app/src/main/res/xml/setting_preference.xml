@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="登录设置" >
+        <SwitchPreference
+                android:key="login"
+                android:summaryOn="下次将自动登录"
+                android:summaryOff="下次需要输入密码登录"
+                android:title="自动登录" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="用户信息设置" >
+        <EditTextPreference
+                android:key="username"
+                android:dialogTitle="请输入用户名"
+                android:title="用户名修改" />
+        <EditTextPreference
+                android:key="password"
+                android:dialogTitle="请输入密码"
+                android:inputType="textPassword"
+                android:title="密码修改" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="天气城市设置" >
+        <EditTextPreference
+                android:key="city"
+                android:dialogTitle="请输入默认城市"
+                android:title="默认城市修改" />
+    </PreferenceCategory>
+</PreferenceScreen>

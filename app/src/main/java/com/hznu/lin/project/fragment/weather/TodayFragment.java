@@ -83,8 +83,8 @@ public class TodayFragment extends Fragment {
     // 初始化设置
     public void init(){
         // 默认城市初始化
-        SharedPreferences sp = getActivity().getSharedPreferences("SP", Context.MODE_PRIVATE);
-        defaultCity = sp.getString("defaultCity","杭州");
+        SharedPreferences sp = getActivity().getSharedPreferences("com.hznu.lin.project_preferences", Context.MODE_PRIVATE);
+        defaultCity = sp.getString("city","杭州");
 
         // recyclerView初始化
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
