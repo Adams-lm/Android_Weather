@@ -7,5 +7,6 @@
     <color name="lightBlue">#00A0E9</color>
     <color name="darkBlue">#027AFF</color>
     <color name="white">#ffffff</color>
-
+    <color name="grey">#808080</color>
+    <color name="lightGrey">#f5f5f5</color>
 </resources>

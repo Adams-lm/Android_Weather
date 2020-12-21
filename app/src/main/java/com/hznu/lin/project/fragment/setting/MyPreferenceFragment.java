@@ -1,15 +1,14 @@
 package com.hznu.lin.project.fragment.setting;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.hznu.lin.project.R;
@@ -31,10 +30,16 @@ import retrofit2.Response;
  */
 public class MyPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
-    public Preference login;
-    public Preference username;
-    public Preference password;
-    public Preference city;
+    private Preference login;
+    private Preference username;
+    private Preference password;
+    private Preference city;
+    private Preference confirm;
+    private String passwordStr = "123";
+    private String oldCity = "杭州";
+
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sp;
 
     public MyPreferenceFragment() {
     }
@@ -42,9 +47,20 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        spInit();
         // 设置页面绑定
         addPreferencesFromResource(R.xml.setting_preference);
         init();
+    }
+
+    private void spInit() {
+        sp = getActivity().getSharedPreferences("com.hznu.lin.project_preferences", Context.MODE_PRIVATE);
+        passwordStr = sp.getString("password", passwordStr);
+        oldCity = sp.getString("city", oldCity);
+        editor = sp.edit();
+        editor.putString("confirm", "");
+        editor.commit();
     }
 
     public void init() {
@@ -52,10 +68,12 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
         username = findPreference("username");
         password = findPreference("password");
         city = findPreference("city");
+        confirm = findPreference("confirm");
         login.setOnPreferenceChangeListener(this);
         username.setOnPreferenceChangeListener(this);
         password.setOnPreferenceChangeListener(this);
         city.setOnPreferenceChangeListener(this);
+        confirm.setOnPreferenceChangeListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -72,12 +90,53 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
                 ToastUtil.showToast(getContext(), "密码修改成功", Toast.LENGTH_SHORT);
                 break;
             case "city":
-                ToastUtil.showToast(getContext(), "默认城市修改成功", Toast.LENGTH_SHORT);
+                isValidCity(newValue.toString());
                 break;
+            case "confirm":
+                String confirmStr = newValue.toString();
+                if (confirmStr.equals(passwordStr)) {
+                    username.setEnabled(true);
+                    password.setEnabled(true);
+                    confirm.setEnabled(false);
+                    ToastUtil.showToast(getContext(), "密码验证成功", Toast.LENGTH_SHORT);
+                } else {
+                    ToastUtil.showToast(getContext(), "密码验证失败", Toast.LENGTH_SHORT);
+                }
             default:
                 break;
         }
         return true;
+    }
+
+    // 判断城市名是否合法
+    public void isValidCity(String city) {
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void run() {
+                GetRequestServiceImpl getRequestService = new GetRequestServiceImpl();
+                Call<ResponseBody> call = getRequestService.getWeather(city);
+                try {
+                    Response<ResponseBody> response = call.execute();
+                    String jsonStr = response.body().string();
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    jsonObject.getJSONObject("data");
+
+                    Looper.prepare();
+                    ToastUtil.showToast(getActivity(), "默认城市已修改为" + city, Toast.LENGTH_LONG);
+                    Looper.loop();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    Looper.prepare();
+                    ToastUtil.showToast(getActivity(), "城市名无效，请输入正确的城市名！", Toast.LENGTH_SHORT);
+                    editor.putString("city", oldCity);
+                    editor.commit();
+                    Looper.loop();
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,10 +58,14 @@ public class TodayFragment extends Fragment {
     TextView tvCity;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.background)
+    LinearLayout background;
+
 
     public static List<CityWeather> weatherList = new ArrayList<>();
     public static String[] citys = {"杭州", "北京", "天津", "福州", "厦门", "宁波", "温州"};
     public static String defaultCity = "杭州";
+
 
     public TodayFragment() {
     }
@@ -81,10 +86,10 @@ public class TodayFragment extends Fragment {
     }
 
     // 初始化设置
-    public void init(){
+    public void init() {
         // 默认城市初始化
         SharedPreferences sp = getActivity().getSharedPreferences("com.hznu.lin.project_preferences", Context.MODE_PRIVATE);
-        defaultCity = sp.getString("city","杭州");
+        defaultCity = sp.getString("city", "杭州");
 
         // recyclerView初始化
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -192,6 +197,7 @@ public class TodayFragment extends Fragment {
                     Weather weather = new Gson().fromJson(weatherObject.toString(), Weather.class);
                     String temperature = weather.getLow().substring(3) + " ~ " + weather.getHigh().substring(3);
                     CityWeather cityWeather = new CityWeather(city, weather.getType(), temperature);
+                    // debug
                     Log.i("WEATHER", cityWeather.toString() + "=============");
                     weatherList.add(cityWeather);
                 } catch (IOException e) {
@@ -202,5 +208,6 @@ public class TodayFragment extends Fragment {
             }
         }).start();
     }
+
 
 }

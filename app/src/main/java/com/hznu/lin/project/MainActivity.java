@@ -1,9 +1,7 @@
 package com.hznu.lin.project;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -50,6 +51,12 @@ public class RecommendFragment extends Fragment {
     Button btnBing;
     @BindView(R.id.iv_bing)
     ImageView ivBing;
+    @BindView(R.id.et_content)
+    EditText etContent;
+    @BindView(R.id.btn_QR)
+    Button btnQR;
+
+    private String content = "https://www.hznu.edu.cn/";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,42 +68,55 @@ public class RecommendFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String content = "https://www.hznu.edu.cn/";
+        // 初始化生成hznu二维码
         Bitmap bitmap = createQECodeBitmap(content, 500, 500, "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
         ivQR.setImageBitmap(bitmap);
     }
 
-    @OnClick(R.id.btn_bing)
-    public void onViewClicked() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String getUrl = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=5&mkt=zh-CN";
-                String response = HttpUtil.get(getUrl, null);
-                String imageUrl = null;
-                // Json 处理
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray bingArray = jsonObject.getJSONArray("images");
-                    ArrayList<Bing> bingList = new ArrayList<>();
-                    for (int i = 0; i < bingArray.length(); i++) {
-                        JSONObject bingObject = bingArray.getJSONObject(i);
-                        Bing bing = new Bing(bingObject.getString("url"), bingObject.getString("copyright"));
-                        bingList.add(bing);
-                    }
-                    // 随机数处理
-                    int size = bingList.size();
-                    int random = new Random().nextInt(size);
-                    Bing bing = bingList.get(random);
-                    imageUrl = "https://www.bing.com" + bing.getUrl();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+    @OnClick({R.id.btn_QR, R.id.btn_bing})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_QR:
+                String string = etContent.getText().toString();
+                if (!string.equals("")) {
+                    content = string;
                 }
-                Message msg = Message.obtain();
-                msg.obj = imageUrl;
-                handlerBing.sendMessage(msg);
-            }
-        }).start();
+                Bitmap bitmap = createQECodeBitmap(content, 500, 500, "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
+                ivQR.setImageBitmap(bitmap);
+                ToastUtil.showToast(getContext(), "二维码更新成功", Toast.LENGTH_SHORT);
+                break;
+            case R.id.btn_bing:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String getUrl = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=5&mkt=zh-CN";
+                        String response = HttpUtil.get(getUrl, null);
+                        String imageUrl = null;
+                        // Json 处理
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray bingArray = jsonObject.getJSONArray("images");
+                            ArrayList<Bing> bingList = new ArrayList<>();
+                            for (int i = 0; i < bingArray.length(); i++) {
+                                JSONObject bingObject = bingArray.getJSONObject(i);
+                                Bing bing = new Bing(bingObject.getString("url"), bingObject.getString("copyright"));
+                                bingList.add(bing);
+                            }
+                            // 随机数处理
+                            int size = bingList.size();
+                            int random = new Random().nextInt(size);
+                            Bing bing = bingList.get(random);
+                            imageUrl = "https://www.bing.com" + bing.getUrl();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Message msg = Message.obtain();
+                        msg.obj = imageUrl;
+                        handlerBing.sendMessage(msg);
+                    }
+                }).start();
+                break;
+        }
     }
 
 
@@ -109,8 +129,8 @@ public class RecommendFragment extends Fragment {
             String urlPath = (String) msg.obj;
             // UI处理
             ivBing.setVisibility(View.VISIBLE);
+            // Glide
             Glide.with(getContext()).load(urlPath).into(ivBing);
-//            ivBing.setImageBitmap(bitmap);
             ToastUtil.showToast(getContext(), "Bing每日一图更新成功", Toast.LENGTH_SHORT);
             super.handleMessage(msg);
         }
@@ -118,6 +138,7 @@ public class RecommendFragment extends Fragment {
 
     /**
      * 创建二维码
+     *
      * @param content
      * @param width
      * @param height
@@ -171,4 +192,5 @@ public class RecommendFragment extends Fragment {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
+
 }

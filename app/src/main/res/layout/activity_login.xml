@@ -86,10 +86,11 @@
                         android:text="记住密码" />
 
                 <TextView
+                        android:id="@+id/tv_forget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="忘记密码?"
-                        android:textColor="#000" />
+                        android:textColor="@color/grey" />
             </LinearLayout>
 
         </LinearLayout>
@@ -98,7 +99,7 @@
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#00A0E9"
+                android:background="@color/lightBlue"
                 android:textSize="20sp"
                 android:textColor="#fff"
                 android:text="登录" />
