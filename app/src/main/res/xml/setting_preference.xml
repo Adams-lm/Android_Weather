@@ -3,6 +3,7 @@
     <PreferenceCategory android:title="登录设置" >
         <SwitchPreference
                 android:key="login"
+                android:icon="@drawable/setting"
                 android:summaryOn="下次将自动登录"
                 android:summaryOff="下次需要输入密码登录"
                 android:title="自动登录" />
@@ -12,16 +13,20 @@
         <EditTextPreference
                 android:key="confirm"
                 android:inputType="textPassword"
+                android:icon="@drawable/person"
                 android:dialogTitle="请输入旧密码"
                 android:title="身份认证" />
         <EditTextPreference
                 android:key="username"
+                android:icon="@drawable/confirm"
+
                 android:dialogTitle="请输入用户名"
                 android:enabled="false"
                 android:title="用户名修改" />
         <EditTextPreference
                 android:key="password"
                 android:dialogTitle="请输入密码"
+                android:icon="@drawable/lock"
                 android:inputType="textPassword"
                 android:enabled="false"
                 android:title="密码修改" />
@@ -31,18 +36,21 @@
         <EditTextPreference
                 android:key="city"
                 android:dialogTitle="请输入默认城市"
+                android:icon="@drawable/default_grey"
                 android:title="默认城市修改" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="历史天气设置" >
         <ListPreference
                 android:key="day_past"
-                android:title="过去天数修改"
+                android:title="历史天数修改"
+                android:icon="@drawable/sunny_grey"
                 android:dialogTitle="选择天数"
                 android:entries="@array/day"
                 android:entryValues="@array/day_value" />
         <ListPreference
                 android:key="day_future"
+                android:icon="@drawable/cloudy_grey"
                 android:title="未来天数修改"
                 android:dialogTitle="选择天数"
                 android:entries="@array/day"

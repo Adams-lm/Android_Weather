@@ -52,6 +52,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation files('libs\\HeWeather_sdk.jar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -76,4 +77,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     // HelloChart
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    // he
+    implementation files('libs/HeWeather_sdk.jar')
 }

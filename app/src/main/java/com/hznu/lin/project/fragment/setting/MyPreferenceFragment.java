@@ -35,6 +35,8 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
     private Preference password;
     private Preference city;
     private Preference confirm;
+    private Preference datPast;
+    private Preference dayFuture;
     private String passwordStr = "123";
     private String oldCity = "杭州";
 
@@ -54,6 +56,9 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
         init();
     }
 
+    /**
+     * sp初始化
+     */
     private void spInit() {
         sp = getActivity().getSharedPreferences("com.hznu.lin.project_preferences", Context.MODE_PRIVATE);
         passwordStr = sp.getString("password", passwordStr);
@@ -63,17 +68,24 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
         editor.commit();
     }
 
+    /**
+     * Preference初始化
+     */
     public void init() {
         login = findPreference("login");
         username = findPreference("username");
         password = findPreference("password");
         city = findPreference("city");
         confirm = findPreference("confirm");
+        datPast = findPreference("day_past");
+        dayFuture = findPreference("day_future");
         login.setOnPreferenceChangeListener(this);
         username.setOnPreferenceChangeListener(this);
         password.setOnPreferenceChangeListener(this);
         city.setOnPreferenceChangeListener(this);
         confirm.setOnPreferenceChangeListener(this);
+        datPast.setOnPreferenceChangeListener(this);
+        dayFuture.setOnPreferenceChangeListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -102,13 +114,23 @@ public class MyPreferenceFragment extends PreferenceFragment implements Preferen
                 } else {
                     ToastUtil.showToast(getContext(), "密码验证失败", Toast.LENGTH_SHORT);
                 }
+                break;
+            case "day_past":
+                ToastUtil.showToast(getContext(), "历史天数修改为" + newValue + "天", Toast.LENGTH_SHORT);
+                break;
+            case "day_future":
+                ToastUtil.showToast(getContext(), "未来天数修改为" + newValue + "天", Toast.LENGTH_SHORT);
+                break;
             default:
                 break;
         }
         return true;
     }
 
-    // 判断城市名是否合法
+    /**
+     * 判断城市名是否合法
+     * @param city
+     */
     public void isValidCity(String city) {
         new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.M)

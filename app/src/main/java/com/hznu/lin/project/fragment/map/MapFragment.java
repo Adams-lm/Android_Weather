@@ -46,7 +46,9 @@ public class MapFragment extends Fragment {
         super.onStart();
     }
 
-    // 百度地图初始化
+    /**
+     * 百度地图初始化
+     */
     private void mapInit() {
 
         // 百度地图相关初始化
@@ -117,8 +119,4 @@ public class MapFragment extends Fragment {
         mMapView.onDestroy();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 }

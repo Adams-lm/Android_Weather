@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -107,8 +108,11 @@ public class RecommendFragment extends Fragment {
                             int random = new Random().nextInt(size);
                             Bing bing = bingList.get(random);
                             imageUrl = "https://www.bing.com" + bing.getUrl();
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            Looper.prepare();
+                            ToastUtil.showToast(getContext(), "网络异常，请检查网络", Toast.LENGTH_SHORT);
+                            Looper.loop();
                         }
                         Message msg = Message.obtain();
                         msg.obj = imageUrl;
@@ -120,7 +124,9 @@ public class RecommendFragment extends Fragment {
     }
 
 
-    // 获取Bing每日一图
+    /**
+     * 获取Bing每日一图
+     */
     @SuppressLint("HandlerLeak")
     private final Handler handlerBing = new Handler() {
 

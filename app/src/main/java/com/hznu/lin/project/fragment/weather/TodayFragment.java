@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,7 +86,9 @@ public class TodayFragment extends Fragment {
         initWeatherList();
     }
 
-    // 初始化设置
+    /**
+     * 初始化设置
+     */
     public void init() {
         // 默认城市初始化
         SharedPreferences sp = getActivity().getSharedPreferences("com.hznu.lin.project_preferences", Context.MODE_PRIVATE);
@@ -96,13 +99,19 @@ public class TodayFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    /**
+     * 天气列表初始化
+     */
     public void initWeatherList() {
         CityWeatherAdapter adapter = new CityWeatherAdapter(weatherList);
         recyclerView.setAdapter(adapter);
     }
 
 
-    // 获取默认城市当天天气
+    /**
+     * 获取默认城市当天天气
+     * @param city
+     */
     public void getTodayWeather(String city) {
         new Thread(new Runnable() {
             @Override
@@ -119,14 +128,18 @@ public class TodayFragment extends Fragment {
                     msg.setData(b);
                     handlerWeather.sendMessage(msg);
                 } catch (IOException e) {
-                    ToastUtil.showToast(getContext(), "系统异常，请稍后再试", Toast.LENGTH_SHORT);
+                    Looper.prepare();
+                    ToastUtil.showToast(getContext(), "网络异常，请检查网络", Toast.LENGTH_SHORT);
+                    Looper.loop();
                     e.printStackTrace();
                 }
             }
         }).start();
     }
 
-    // 获取默认城市当天天气handle
+    /**
+     * 获取默认城市当天天气handle
+     */
     @SuppressLint("HandlerLeak")
     private Handler handlerWeather = new Handler() {
         @Override
@@ -177,7 +190,10 @@ public class TodayFragment extends Fragment {
         }
     };
 
-    // 获取某个城市天气信息
+    /**
+     * 获取某个城市天气信息
+     * @param city
+     */
     public static void getCityWeather(String city) {
         new Thread(new Runnable() {
             @Override
