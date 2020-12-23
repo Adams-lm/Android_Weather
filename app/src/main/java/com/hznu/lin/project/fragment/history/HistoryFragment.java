@@ -217,6 +217,7 @@ public class HistoryFragment extends Fragment {
         // 视角设置
         Viewport v = new Viewport(lineChartPast.getMaximumViewport());
         v.top = Arrays.stream(tempHighPast).max().getAsInt() + 1; //最高点为最大值+1
+        v.bottom = Arrays.stream(tempLowPast).min().getAsInt() - 1; //最低点为最小值-1
         lineChartPast.setMaximumViewport(v);   //给最大的视图设置 相当于原图
         lineChartPast.setCurrentViewport(v);   //给当前的视图设置 相当于当前展示的图
     }
@@ -273,6 +274,7 @@ public class HistoryFragment extends Fragment {
         // 视角设置
         Viewport v = new Viewport(lineChartFuture.getMaximumViewport());
         v.top = Arrays.stream(tempHighFuture).max().getAsInt() + 1; //最高点为最大值+1
+        v.bottom = Arrays.stream(tempLowFuture).min().getAsInt() - 1; //最低点为最小值-1
         lineChartFuture.setMaximumViewport(v);   //给最大的视图设置 相当于原图
         lineChartFuture.setCurrentViewport(v);   //给当前的视图设置 相当于当前展示的图
 
@@ -284,8 +286,7 @@ public class HistoryFragment extends Fragment {
     private void pastDateInit() {
         WeatherDataBase weatherDataBase = Room.databaseBuilder(getContext(), WeatherDataBase.class, "WeatherDataBase.db").allowMainThreadQueries().build();
         WeatherDataDao weatherDataDao = weatherDataBase.weatherDataDao();
-        WeatherData byDate = weatherDataDao.findByDate("12-22");
-
+        // 获取最近8天数据
         List<WeatherData> all = weatherDataDao.getRecently();
         int count = 7;
         for (WeatherData data : all) {

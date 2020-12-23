@@ -89,15 +89,15 @@ public class MainActivity extends AppCompatActivity {
                         HistoryFragment.dateFuture[i] = HistoryFragment.dateFuture[i].replace('-', '/');
                         HistoryFragment.tempLowFuture[i] = Integer.parseInt(weatherList.get(i).getTemp_low());
                         HistoryFragment.tempHighFuture[i] = Integer.parseInt(weatherList.get(i).getTemp_high());
-                        Log.i("WEATHER", HistoryFragment.dateFuture[i]);
+                        Log.i("WEATHER", HistoryFragment.dateFuture[i]+" "+ HistoryFragment.tempLowFuture[i] +" "+HistoryFragment.tempHighFuture[i]);
                     }
                     // 因为这个api只提供未来6天数据，所以第7天数据这里选择复制第五天的数据
                     String month = HistoryFragment.dateFuture[5].substring(0, 2);
                     String dayStr = HistoryFragment.dateFuture[5].substring(3, 5);
                     int day = Integer.parseInt(dayStr) + 1;
                     HistoryFragment.dateFuture[6] = month + "/" + day;
-                    HistoryFragment.tempLowFuture[6] = HistoryFragment.tempLowFuture[3];
-                    HistoryFragment.tempHighFuture[6] = HistoryFragment.tempHighFuture[3];
+                    HistoryFragment.tempLowFuture[6] = HistoryFragment.tempLowFuture[4];
+                    HistoryFragment.tempHighFuture[6] = HistoryFragment.tempHighFuture[4];
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
